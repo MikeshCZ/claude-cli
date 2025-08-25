@@ -77,10 +77,13 @@ claude-cli --list-models
 claude-cli -d claude-sonnet-4-0
 
 # Zapnutí kontextového okna permanentně
-claude-cli --toggle-context
+claude-cli --context-toggle
+
+# Kontrola stavu kontextového okna
+claude-cli --context-status
 
 # Restart chatu - vymazání historie
-claude-cli --restart-chat
+claude-cli --context-restart
 
 # Zobrazit nápovědu
 claude-cli -h
@@ -153,14 +156,17 @@ Claude CLI podporuje pokračování konverzace pomocí kontextového okna:
 
 ```bash
 # Zapnutí kontextového okna permanentně
-claude-cli --toggle-context
+claude-cli --context-toggle
+
+# Kontrola, zda je kontextové okno zapnuté
+claude-cli --context-status
 
 # Po zapnutí fungují všechny dotazy s kontextem automaticky
 claude-cli "Ahoj Claude!"
 claude-cli "Co jsi říkal v předchozí zprávě?"
 
 # Vypnout kontextové okno
-claude-cli --toggle-context
+claude-cli --context-toggle
 ```
 
 #### Dočasné použití
@@ -178,16 +184,20 @@ claude-cli "Normální dotaz"
 
 ```bash
 # Vymazání historie konverzace
-claude-cli --restart-chat
+claude-cli --context-restart
 
-# Zobrazení stavu kontextového okna
+# Kontrola stavu kontextového okna
+claude-cli --context-status
+
+# Zobrazení obsahu historie konverzace
 cat ~/.claude-cli-history
 ```
 
 ### Tip
 
-- Pro pohodlné používání: `claude-cli --toggle-context` jednou zapne, pak už nemusíš zadávat žádné parametry
-- Pro dlouhodobé konverzace doporučujeme občasný restart pomocí `--restart-chat` pro udržení relevantnosti kontextu
+- Pro pohodlné používání: `claude-cli --context-toggle` jednou zapne, pak už nemusíš zadávat žádné parametry
+- Stav kontextu zkontroluj pomocí `claude-cli --context-status` (vrací ENABLED/DISABLED)
+- Pro dlouhodobé konverzace doporučujeme občasný restart pomocí `--context-restart` pro udržení relevantnosti kontextu
 - **Pozor, s každým dotazem se posílá i historie a zvyšuje se tím spotřeba input tokenů!**
 
 ## Markdown formátování

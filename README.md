@@ -77,10 +77,13 @@ claude-cli --list-models
 claude-cli -d claude-sonnet-4-0
 
 # Enable context window permanently
-claude-cli --toggle-context
+claude-cli --context-toggle
+
+# Check context window status
+claude-cli --context-status
 
 # Restart chat - clear history
-claude-cli --restart-chat
+claude-cli --context-restart
 
 # Show help
 claude-cli -h
@@ -153,14 +156,17 @@ Claude CLI supports continuing conversations using a context window:
 
 ```bash
 # Enable context window permanently
-claude-cli --toggle-context
+claude-cli --context-toggle
+
+# Check if context window is enabled
+claude-cli --context-status
 
 # After enabling, all queries work with context automatically
 claude-cli "Hello Claude!"
 claude-cli "What did you say in the previous message?"
 
 # Disable context window
-claude-cli --toggle-context
+claude-cli --context-toggle
 ```
 
 #### Temporary Use
@@ -178,16 +184,20 @@ claude-cli "Normal query"
 
 ```bash
 # Clear conversation history
-claude-cli --restart-chat
+claude-cli --context-restart
 
-# Display context window status
+# Check context window status
+claude-cli --context-status
+
+# Display conversation history file content
 cat ~/.claude-cli-history
 ```
 
 ### Tip
 
-- For convenient usage: `claude-cli --toggle-context` enables once, then you don't need to specify any parameters
-- For long-term conversations, we recommend occasional restart using `--restart-chat` to maintain context relevance
+- For convenient usage: `claude-cli --context-toggle` enables once, then you don't need to specify any parameters
+- Check current status with `claude-cli --context-status` (returns ENABLED/DISABLED)
+- For long-term conversations, we recommend occasional restart using `--context-restart` to maintain context relevance
 - **Warning: with each query, history is also sent, increasing input token consumption!**
 
 ## Markdown Formatting

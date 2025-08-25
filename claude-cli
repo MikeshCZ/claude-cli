@@ -6,7 +6,7 @@ CLAUDE_API_URL="https://api.anthropic.com/v1/messages"
 CONFIG_FILE="$HOME/.claude-cli-config"
 HISTORY_FILE="$HOME/.claude-cli-history"
 DEFAULT_MODEL="claude-3-5-haiku-latest"
-VERSION="v1.1.3"
+VERSION="v1.2.0"
 
 show_help() {
     cat << EOF
@@ -24,8 +24,9 @@ OPTIONS:
     --list-models         List all available Anthropic API models
     --no-format           Disable markdown formatting in output
     --context-window      Force enable conversation history for this request only
-    --toggle-context      Toggle conversation history on/off permanently (saves to config)
-    --restart-chat        Clear conversation history and start fresh
+    --context-toggle      Toggle conversation history on/off permanently (saves to config)
+    --context-status      Show current conversation history status (ENABLED/DISABLED)
+    --context-restart     Clear conversation history and start fresh
 
 EXAMPLES:
     claude-cli "What is the weather like today?"
@@ -36,8 +37,9 @@ EXAMPLES:
     claude-cli --list-models
     claude-cli --no-format
     claude-cli --context-window "Continue our previous conversation"
-    claude-cli --toggle-context
-    claude-cli --restart-chat
+    claude-cli --context-toggle
+    claude-cli --context-status
+    claude-cli --context-restart
     
 PIPE USAGE:
     git log --oneline | head -5 | claude-cli "Translate these commits to Czech"
@@ -190,6 +192,17 @@ toggle_context() {
     else
         save_context_setting "true"
     fi
+}
+
+show_context_status() {
+    load_config
+    
+    if [[ "$CLAUDE_CONTEXT_ENABLED" == "true" ]]; then
+        echo "ENABLED"
+    else
+        echo "DISABLED"
+    fi
+    exit 0
 }
 
 clear_history() {
@@ -489,10 +502,13 @@ main() {
                 context_override="true"
                 shift
                 ;;
-            --toggle-context)
+            --context-toggle)
                 toggle_context
                 ;;
-            --restart-chat)
+            --context-status)
+                show_context_status
+                ;;
+            --context-restart)
                 clear_history
                 ;;
             -*)
