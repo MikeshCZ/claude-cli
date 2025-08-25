@@ -1,3 +1,6 @@
+<a href="https://www.buymeacoffee.com/michalsara" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+
 # Claude CLI
 
 Jednoduchá CLI aplikace pro komunikaci s Anthropic Claude API.
@@ -32,6 +35,10 @@ claude-cli --show-model
 # Zobrazit nápovědu
 claude-cli -h
 ```
+
+<p align="center">
+  <img src="screenshot.png" alt="Screenshot">
+</p>
 
 ## Požadavky
 
@@ -112,3 +119,9 @@ Aplikace automaticky obarvuje a formátuje odpovědi s následujícími prvky:
 - **Výchozí**: Barevné formátování zapnuto
 - `--no-format`: Raw markdown bez formátování
 - **Glow**: Pokud je nainstalován, použije se automaticky
+
+## 🧑‍💻 Autor
+
+- [Více o autorovi](https://www.michalsara.cz)
+
+## ☕ Pokud se vám tato repository líbí, můžete **[mi koupit kafe](https://www.buymeacoffee.com/michalsara)**. Díky!
