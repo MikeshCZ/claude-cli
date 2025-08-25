@@ -14,7 +14,7 @@ Jednoduchá CLI aplikace pro komunikaci s Anthropic Claude API.
 
 1. Stáhněte soubor `claude-cli`: `curl -O https://raw.githubusercontent.com/MikeshCZ/claude-cli/main/claude-cli`
 2. Učiňte jej spustitelný: `chmod +x claude-cli`
-3. (Volitelně) Zkopírujte do PATH: `sudo cp claude-cli /usr/local/bin/`
+3. (Volitelně) Přesuňte do PATH: `sudo mv claude-cli /usr/local/bin/`
 
 ## Nastavení
 
