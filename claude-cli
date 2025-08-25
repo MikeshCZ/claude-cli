@@ -16,6 +16,7 @@ A simple CLI tool for interacting with Anthropic Claude API.
 
 OPTIONS:
     -h, --help            Show this help message
+    -v, --version         Show version and logo
     -k, --key KEY         Set API key (saves to config file)
     -m, --model MODEL     Model to use for this request
     -d, --default MODEL   Set default model (saves to config file)
@@ -51,6 +52,24 @@ SETUP:
 
 Created by Michal Šára (https://michalsara.cz)
 Version: $VERSION
+EOF
+}
+
+show_version() {
+    cat << EOF
+
+ ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗       ██████╗██╗     ██╗
+██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝      ██╔════╝██║     ██║
+██║     ██║     ███████║██║   ██║██║  ██║█████╗  █████╗██║     ██║     ██║
+██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  ╚════╝██║     ██║     ██║
+╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗      ╚██████╗███████╗██║
+ ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝       ╚═════╝╚══════╝╚═╝
+                                                                    
+Claude-CLI $VERSION
+
+A simple CLI tool for interacting with Anthropic Claude API.
+Created by Michal Šára (https://michalsara.cz)
+
 EOF
 }
 
@@ -424,6 +443,10 @@ main() {
         case $1 in
             -h|--help)
                 show_help
+                exit 0
+                ;;
+            -v|--version)
+                show_version
                 exit 0
                 ;;
             -k|--key)

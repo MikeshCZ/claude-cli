@@ -1,13 +1,20 @@
 <a href="https://www.buymeacoffee.com/michalsara" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 
-# Claude CLI
+# Claude-CLI
+
+ ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗       ██████╗██╗     ██╗
+██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝      ██╔════╝██║     ██║
+██║     ██║     ███████║██║   ██║██║  ██║█████╗  █████╗██║     ██║     ██║
+██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  ╚════╝██║     ██║     ██║
+╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗      ╚██████╗███████╗██║
+ ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝       ╚═════╝╚══════╝╚═╝
 
 Jednoduchá CLI aplikace pro komunikaci s Anthropic Claude API.
 
 ## Instalace
 
-1. Stáhněte soubor `claude-cli`
+1. Stáhněte soubor `claude-cli`: `curl -O https://raw.githubusercontent.com/MikeshCZ/claude-cli/main/claude-cli`
 2. Učiňte jej spustitelný: `chmod +x claude-cli`
 3. (Volitelně) Zkopírujte do PATH: `sudo cp claude-cli /usr/local/bin/`
 
@@ -16,38 +23,6 @@ Jednoduchá CLI aplikace pro komunikaci s Anthropic Claude API.
 1. Získejte API klíč z https://console.anthropic.com/
 2. Nastavte API klíč: `claude-cli -k VÁŠ_API_KLÍČ`
 3. (Volitelně) Nastavte výchozí model: `claude-cli -d NÁZEV_MODELU`
-
-## Použití
-
-```bash
-# Základní dotaz (použije výchozí model)
-claude-cli "Jaká je vzdálenost mezi Zemí a Měsícem přepočtena na počet Škoda Fábií?"
-
-# Použití konkrétního modelu pro jeden dotaz
-claude-cli -m claude-3-haiku-20240307 "Rychlá otázka"
-
-# Zobrazit aktuální výchozí model
-claude-cli --show-model
-
-# Zobrazit dostupné modely z API
-claude-cli --list-models
-
-# Nastavení výchozího modelu (uloží se do konfigurace)
-claude-cli -d claude-sonnet-4-0
-
-# Zapnutí kontextového okna permanentně
-claude-cli --toggle-context
-
-# Restart chatu - vymazání historie
-claude-cli --restart-chat
-
-# Zobrazit nápovědu
-claude-cli -h
-```
-
-<p align="center">
-  <img src="screenshot.png" alt="Screenshot">
-</p>
 
 ## Požadavky
 
@@ -83,18 +58,41 @@ sudo apt-get install jq curl glow
 - ✅ Pipe vstup ze stdin - podporuje kombinaci příkazů s `|`
 - ✅ Nápověda
 
-## Příklady
+<p align="center">
+  <img src="screenshot.png" alt="Screenshot">
+</p>
+
+## Použití & příklady
 
 ```bash
-# Nastavení API klíče
-claude-cli -k sk-ant-api03-...
-
-# Jednoduché dotazy (použije výchozí model)
+# Základní dotaz (použije výchozí model)
+claude-cli "Jaká je vzdálenost mezi Zemí a Měsícem přepočtena na počet Škoda Fábií?"
 claude-cli "Co je to umělá inteligence?"
 claude-cli "Napiš krátkou báseň"
 
 # Použití konkrétního modelu pro jeden dotaz
 claude-cli -m claude-3-haiku-20240307 "Rychlá otázka"
+
+# Zobrazit aktuální výchozí model
+claude-cli --show-model
+
+# Zobrazit dostupné modely z API
+claude-cli --list-models
+
+# Nastavení výchozího modelu (uloží se do konfigurace)
+claude-cli -d claude-sonnet-4-0
+
+# Zapnutí kontextového okna permanentně
+claude-cli --toggle-context
+
+# Restart chatu - vymazání historie
+claude-cli --restart-chat
+
+# Zobrazit nápovědu
+claude-cli -h
+
+# Nastavení API klíče
+claude-cli -k sk-ant-api03-...
 
 # Bez formátování (raw markdown)
 claude-cli --no-format "Zobraz mi markdown syntax"
@@ -110,9 +108,9 @@ ls -la | claude-cli "Vysvětli mi tyto soubory a adresáře"
 
 ## Pipe vstup (Stdin)
 
-Claude CLI nyní podporuje příjem dat přes pipe (stdin), což umožňuje snadnou integraci s ostatními příkazy:
+Claude CLI podporuje příjem dat přes pipe (stdin), což umožňuje snadnou integraci s ostatními příkazy:
 
-### Způsoby použití
+### Příklady použití
 
 ```bash
 # Pouze pipe vstup (bez dotazu)
@@ -121,21 +119,24 @@ cat dokument.txt | claude-cli
 # Pipe vstup + dotaz
 git diff | claude-cli "Zkontroluj tyto změny kódu"
 
-# Klasické příkazy s pipe
+# Zadání projektu, které je pro tyto typy dotazů stejné
+cat projekt.txt | claude-cli "Dotaz k tomuto projektu"
+
+# Systémové příkazy s pipe
 ps aux | claude-cli "Vysvětli mi tyto procesy. Je tam něco podezřelého?"
-curl -s https://api.github.com/users/MikeshCZ | claude-cli "Shrň informace o tomto uživateli"
+df -h | claude-cli "Vyhodnoť stav disku"
 
 # Git příkazy
 git log --oneline | head -10 | claude-cli "Shrň poslední změny"
 git status | claude-cli "Co mám udělat s těmito změnami?"
 
-# Systémové příkazy  
-df -h | claude-cli "Vyhodnoť stav disku"
+# Ostatní  
+curl -s https://api.github.com/users/MikeshCZ | claude-cli "Shrň informace o tomto uživateli"
 ```
 
 ### Jak to funguje
 
-- Claude-cli automaticky detekuje, zda přichází vstup z pipe
+- Claude-CLI automaticky detekuje, zda přichází vstup z pipe
 - Pipe vstup se kombinuje s dotazem (pokud je poskytnut)
 - Pokud není zadán dotaz, použije se pouze pipe vstup
 - Pipe vstup se zobrazí před dotazem, oddělený prázdným řádkem
