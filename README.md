@@ -1,29 +1,34 @@
 <a href="https://www.buymeacoffee.com/michalsara" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-
 # Claude-CLI
 
-Jednoduchá CLI aplikace pro komunikaci s Anthropic Claude API.
+**Language:** [🇺🇸 English](README.md) | [🇨🇿 Čeština](README.cs.md)
 
-## Instalace
+A simple CLI application for communicating with the Anthropic Claude API.
 
-1. Stáhněte soubor `claude-cli`: `curl -O https://raw.githubusercontent.com/MikeshCZ/claude-cli/main/claude-cli`
-2. Učiňte jej spustitelný: `chmod +x claude-cli`
-3. (Volitelně) Zkopírujte do PATH: `sudo cp claude-cli /usr/local/bin/`
+<p align="center">
+  <img src="screenshot.png" alt="Screenshot">
+</p>
 
-## Nastavení
+## Installation
 
-1. Získejte API klíč z https://console.anthropic.com/
-2. Nastavte API klíč: `claude-cli -k VÁŠ_API_KLÍČ`
-3. (Volitelně) Nastavte výchozí model: `claude-cli -d NÁZEV_MODELU`
+1. Download the `claude-cli` file: `curl -O https://raw.githubusercontent.com/MikeshCZ/claude-cli/main/claude-cli`
+2. Make it executable: `chmod +x claude-cli`
+3. (Optional) Copy to PATH: `sudo cp claude-cli /usr/local/bin/`
 
-## Požadavky
+## Setup
 
-- `curl` - pro HTTP požadavky
-- `jq` - pro práci s JSON
-- `glow` - volitelné pro lepší formátování odpovědí
+1. Get an API key from https://console.anthropic.com/
+2. Set the API key: `claude-cli -k YOUR_API_KEY`
+3. (Optional) Set default model: `claude-cli -d MODEL_NAME`
 
-### Instalace závislostí
+## Requirements
+
+- `curl` - for HTTP requests
+- `jq` - for JSON processing
+- `glow` - optional for better response formatting
+
+### Installing Dependencies
 
 **macOS:**
 ```bash
@@ -35,196 +40,192 @@ brew install jq glow
 sudo apt-get install jq curl glow
 ```
 
-## Funkce
+## Features
 
-- ✅ Jednoduché dotazy na Claude API
-- ✅ Konfigurace API klíče
-- ✅ Výběr modelu pro jednotlivé dotazy
-- ✅ Nastavení výchozího modelu
-- ✅ Zobrazení aktuálního výchozího modelu
-- ✅ Zobrazení dostupných modelů z API
-- ✅ Markdown formátování odpovědí
-- ✅ Kontextové okno pro pokračování konverzace
-- ✅ Permanentní zapnutí/vypnutí kontextového okna (toggle)
-- ✅ Historie konverzace ukládaná v ~/.claude-cli-history
-- ✅ Restart chatu s vymazáním historie
-- ✅ Pipe vstup ze stdin - podporuje kombinaci příkazů s `|`
-- ✅ Nápověda
+- ✅ Simple queries to Claude API
+- ✅ API key configuration
+- ✅ Model selection for individual queries
+- ✅ Default model setting
+- ✅ Display current default model
+- ✅ Display available models from API
+- ✅ Markdown formatting of responses
+- ✅ Context window for continuing conversations
+- ✅ Persistent context window toggle on/off
+- ✅ Conversation history stored in ~/.claude-cli-history
+- ✅ Chat restart with history clearing
+- ✅ Pipe input from stdin - supports command combinations with `|`
+- ✅ Help
 
-<p align="center">
-  <img src="screenshot.png" alt="Screenshot">
-</p>
-
-## Použití & příklady
+## Usage & Examples
 
 ```bash
-# Základní dotaz (použije výchozí model)
-claude-cli "Jaká je vzdálenost mezi Zemí a Měsícem přepočtena na počet Škoda Fábií?"
-claude-cli "Co je to umělá inteligence?"
-claude-cli "Napiš krátkou báseň"
+# Basic query (uses default model)
+claude-cli "What is the distance between Earth and Moon converted to the number of Škoda Fábias?"
+claude-cli "What is artificial intelligence?"
+claude-cli "Write a short poem"
 
-# Použití konkrétního modelu pro jeden dotaz
-claude-cli -m claude-3-haiku-20240307 "Rychlá otázka"
+# Using a specific model for one query
+claude-cli -m claude-3-haiku-20240307 "Quick question"
 
-# Zobrazit aktuální výchozí model
+# Show current default model
 claude-cli --show-model
 
-# Zobrazit dostupné modely z API
+# Show available models from API
 claude-cli --list-models
 
-# Nastavení výchozího modelu (uloží se do konfigurace)
+# Set default model (saved to configuration)
 claude-cli -d claude-sonnet-4-0
 
-# Zapnutí kontextového okna permanentně
+# Enable context window permanently
 claude-cli --toggle-context
 
-# Restart chatu - vymazání historie
+# Restart chat - clear history
 claude-cli --restart-chat
 
-# Zobrazit nápovědu
+# Show help
 claude-cli -h
 
-# Nastavení API klíče
+# Set API key
 claude-cli -k sk-ant-api03-...
 
-# Bez formátování (raw markdown)
-claude-cli --no-format "Zobraz mi markdown syntax"
+# No formatting (raw markdown)
+claude-cli --no-format "Show me markdown syntax"
 
-# Pipe vstup ze stdin
-git log --oneline | head -5 | claude-cli "Přelož tyto commit messages do češtiny"
-cat soubor.txt | claude-cli "Shrň obsah tohoto souboru"
-echo "Hello world" | claude-cli "Přelož do češtiny"
+# Pipe input from stdin
+git log --oneline | head -5 | claude-cli "Translate these commit messages to Czech"
+cat file.txt | claude-cli "Summarize the content of this file"
+echo "Hello world" | claude-cli "Translate to Czech"
 
-# Kombinace pipe vstupu s dotazem
-ls -la | claude-cli "Vysvětli mi tyto soubory a adresáře"
+# Combination of pipe input with query
+ls -la | claude-cli "Explain these files and directories to me"
 ```
 
-## Pipe vstup (Stdin)
+## Pipe Input (Stdin)
 
-Claude CLI podporuje příjem dat přes pipe (stdin), což umožňuje snadnou integraci s ostatními příkazy:
+Claude CLI supports receiving data through pipe (stdin), enabling easy integration with other commands:
 
-### Příklady použití
+### Usage Examples
 
 ```bash
-# Pouze pipe vstup (bez dotazu)
-cat dokument.txt | claude-cli
+# Pipe input only (no query)
+cat document.txt | claude-cli
 
-# Pipe vstup + dotaz
-git diff | claude-cli "Zkontroluj tyto změny kódu"
+# Pipe input + query
+git diff | claude-cli "Check these code changes"
 
-# Zadání projektu, které je pro tyto typy dotazů stejné
-cat projekt.txt | claude-cli "Dotaz k tomuto projektu"
+# Project input, which is the same for these types of queries
+cat project.txt | claude-cli "Question about this project"
 
-# Systémové příkazy s pipe
-ps aux | claude-cli "Vysvětli mi tyto procesy. Je tam něco podezřelého?"
-df -h | claude-cli "Vyhodnoť stav disku"
+# System commands with pipe
+ps aux | claude-cli "Explain these processes to me. Is there anything suspicious?"
+df -h | claude-cli "Evaluate disk status"
 
-# Git příkazy
-git log --oneline | head -10 | claude-cli "Shrň poslední změny"
-git status | claude-cli "Co mám udělat s těmito změnami?"
+# Git commands
+git log --oneline | head -10 | claude-cli "Summarize recent changes"
+git status | claude-cli "What should I do with these changes?"
 
-# Ostatní  
-curl -s https://api.github.com/users/MikeshCZ | claude-cli "Shrň informace o tomto uživateli"
+# Others
+curl -s https://api.github.com/users/MikeshCZ | claude-cli "Summarize information about this user"
 ```
 
-### Jak to funguje
+### How It Works
 
-- Claude-CLI automaticky detekuje, zda přichází vstup z pipe
-- Pipe vstup se kombinuje s dotazem (pokud je poskytnut)
-- Pokud není zadán dotaz, použije se pouze pipe vstup
-- Pipe vstup se zobrazí před dotazem, oddělený prázdným řádkem
+- Claude-CLI automatically detects if input is coming from pipe
+- Pipe input is combined with query (if provided)
+- If no query is provided, only pipe input is used
+- Pipe input is displayed before the query, separated by an empty line
 
-## Kontextové okno (Context Window)
+## Context Window
 
-Claude CLI podporuje pokračování konverzace pomocí kontextového okna:
+Claude CLI supports continuing conversations using a context window:
 
-### Jak funguje
+### How It Works
 
-- **Defaultně vypnuto**: Bez aktivace každý dotaz je nezávislý
-- **Historie se ukládá**: Při zapnutí se konverzace ukládá do `~/.claude-cli-history`
-- **Persistentní nastavení**: Jednou zapnuto, zůstává aktivní pro všechny příkazy
-- **Efektivní správa tokenů**: Uchovává pouze posledních 20 zpráv pro optimalizaci
-- **Bezpečnost**: Historie je uložena s právy 600 (pouze vlastník může číst)
+- **Default off**: Without activation, each query is independent
+- **History is saved**: When enabled, conversation is saved to `~/.claude-cli-history`
+- **Persistent setting**: Once enabled, remains active for all commands
+- **Efficient token management**: Keeps only the last 20 messages for optimization
+- **Security**: History is saved with 600 permissions (only owner can read)
 
-### Zapnutí/vypnutí kontextového okna
+### Enabling/Disabling Context Window
 
-#### Permanentní aktivace (doporučený způsob)
+#### Permanent Activation (Recommended)
 
 ```bash
-# Zapnutí kontextového okna permanentně
+# Enable context window permanently
 claude-cli --toggle-context
 
-# Po zapnutí fungují všechny dotazy s kontextem automaticky
-claude-cli "Ahoj Claude!"
-claude-cli "Co jsi říkal v předchozí zprávě?"
+# After enabling, all queries work with context automatically
+claude-cli "Hello Claude!"
+claude-cli "What did you say in the previous message?"
 
-# Vypnout kontextové okno
+# Disable context window
 claude-cli --toggle-context
 ```
 
-#### Dočasné použití
+#### Temporary Use
 
 ```bash
-# Vynutit kontext jen pro tento jeden dotaz
-claude-cli --context-window "Tvůj dotaz s kontextem"
-claude-cli --context-window "Na co jsem se ptal?"
+# Force context for this one query only
+claude-cli --context-window "Your query with context"
+claude-cli --context-window "What did I ask about?"
 
-# Další dotaz už bude bez kontextu (pokud není zapnut toggle)
-claude-cli "Normální dotaz"
+# Next query will be without context (if toggle is not enabled)
+claude-cli "Normal query"
 ```
 
-### Správa historie
+### History Management
 
 ```bash
-# Vymazání historie konverzace
+# Clear conversation history
 claude-cli --restart-chat
 
-# Zobrazení stavu kontextového okna
+# Display context window status
 cat ~/.claude-cli-history
 ```
 
 ### Tip
 
-- Pro pohodlné používání: `claude-cli --toggle-context` jednou zapne, pak už nemusíš zadávat žádné parametry
-- Pro dlouhodobé konverzace doporučujeme občasný restart pomocí `--restart-chat` pro udržení relevantnosti kontextu
-- **Pozor, s každým dotazem se posílá i historie a zvyšuje se tím spotřeba input tokenů!**
+- For convenient usage: `claude-cli --toggle-context` enables once, then you don't need to specify any parameters
+- For long-term conversations, we recommend occasional restart using `--restart-chat` to maintain context relevance
+- **Warning: with each query, history is also sent, increasing input token consumption!**
 
-## Markdown formátování
+## Markdown Formatting
 
-- **Glow**: Pokud je nainstalován, tak se použije se automaticky (má přednost před ručním formátováním níže).
+- **Glow**: If installed, it's used automatically (takes precedence over manual formatting below).
 
-Aplikace automaticky obarvuje a formátuje odpovědi s následujícími prvky:
+The application automatically colors and formats responses with the following elements:
 
-### Nadpisy
+### Headers
 
-- `# Nadpis` → ▶ **Nadpis** (fialově tučně)
-- `## Nadpis` → ▶ **Nadpis** (modře tučně)  
-- `### Nadpis` → ▶ **Nadpis** (tyrkysově tučně)
-- `#### Nadpis` → ▶ **Nadpis** (bíle tučně)
+- `# Header` → ▶ **Header** (purple bold)
+- `## Header` → ▶ **Header** (blue bold)  
+- `### Header` → ▶ **Header** (cyan bold)
+- `#### Header` → ▶ **Header** (white bold)
 
-### Text formátování
+### Text Formatting
 
-- `**tučný text**` → **tučný text**
-- `*kurzíva*` → *kurzíva* 
-- `~~přeškrtnuté~~` → ~~přeškrtnuté~~ (šedě)
-- `\`inline kód\`` → `kód` (bílý text na šedém pozadí)
+- `**bold text**` → **bold text**
+- `*italic*` → *italic* 
+- `~~strikethrough~~` → ~~strikethrough~~ (gray)
+- `\`inline code\`` → `code` (white text on gray background)
 
-### Bloky a struktury
+### Blocks and Structures
 
-- \`\`\`kód blok\`\`\` → zelený rámek s názvem jazyka
-- `> citace` → žlutý pruh s kurzívou
-- `- seznam` → tyrkysová odrážka •
-- `1. číslovaný` → modrá čísla
-- `---` → horizontální čára
-- `[odkaz](url)` → podtržený modrý text s URL
+- \`\`\`code block\`\`\` → green frame with language name
+- `> quote` → yellow stripe with italic
+- `- list` → cyan bullet •
+- `1. numbered` → blue numbers
+- `---` → horizontal line
+- `[link](url)` → underlined blue text with URL
 
-### Ovládání
+### Control
 
-- **Výchozí**: Barevné formátování zapnuto
-- `--no-format`: Raw markdown bez formátování
+- **Default**: Color formatting enabled
+- `--no-format`: Raw markdown without formatting
 
-## 🧑‍💻 Autor
+## 🧑‍💻 Author
 
-- [Více o autorovi](https://www.michalsara.cz)
+- [More about the author](https://www.michalsara.cz)
 
-## ☕ Pokud se vám tato repository líbí, můžete **[mi koupit kafe](https://www.buymeacoffee.com/michalsara)**. Díky!
+## ☕ If you like this repository, you can **[buy me a coffee](https://www.buymeacoffee.com/michalsara)**. Thanks!
