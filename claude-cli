@@ -6,7 +6,7 @@ CLAUDE_API_URL="https://api.anthropic.com/v1/messages"
 CONFIG_FILE="$HOME/.claude-cli-config"
 HISTORY_FILE="$HOME/.claude-cli-history"
 DEFAULT_MODEL="claude-3-5-haiku-latest"
-VERSION="v1.1.0"
+VERSION="v1.1.1"
 
 show_help() {
     cat << EOF
@@ -366,13 +366,13 @@ send_request() {
     if [[ "$use_context" == "true" ]]; then
         # Load existing history and add new user message
         messages=$(load_history)
-        messages=$(echo "$messages" | jq ". += [{\"role\": \"user\", \"content\": \"$query\"}]")
+        messages=$(echo "$messages" | jq --arg query "$query" '. += [{"role": "user", "content": $query}]')
         
         # Save user message to history
         save_to_history "user" "$query"
     else
         # Single message without context
-        messages='[{"role": "user", "content": "'"$query"'"}]'
+        messages=$(jq -c -n --arg query "$query" '[{"role": "user", "content": $query}]')
     fi
     
     local json_payload=$(jq -n \
