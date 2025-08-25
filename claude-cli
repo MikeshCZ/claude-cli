@@ -4,8 +4,9 @@ set -e
 
 CLAUDE_API_URL="https://api.anthropic.com/v1/messages"
 CONFIG_FILE="$HOME/.claude-cli-config"
+HISTORY_FILE="$HOME/.claude-cli-history"
 DEFAULT_MODEL="claude-3-5-haiku-latest"
-VERSION="v1.0.1"
+VERSION="v1.1.0"
 
 show_help() {
     cat << EOF
@@ -21,15 +22,21 @@ OPTIONS:
     --show-model          Show currently configured default model
     --list-models         List all available Anthropic API models
     --no-format           Disable markdown formatting in output
+    --context-window      Force enable conversation history for this request only
+    --toggle-context      Toggle conversation history on/off permanently (saves to config)
+    --restart-chat        Clear conversation history and start fresh
 
 EXAMPLES:
     claude-cli "What is the weather like today?"
-    claude-cli -k YOUR_API_KEY "Hello Claude"
+    claude-cli -k YOUR_API_KEY
     claude-cli -m claude-3-haiku-20240307 "Quick question"
     claude-cli -d claude-sonnet-4-0
     claude-cli --show-model
     claude-cli --list-models
-    claude-cli --no-format "Show raw markdown output"
+    claude-cli --no-format
+    claude-cli --context-window "Continue our previous conversation"
+    claude-cli --toggle-context
+    claude-cli --restart-chat
 
 SETUP:
     1. Get your API key from https://console.anthropic.com/
@@ -45,9 +52,10 @@ EOF
 save_api_key() {
     local temp_file=$(mktemp)
     
-    # Preserve existing default model if it exists
+    # Preserve existing default model and context setting if they exist
     if [[ -f "$CONFIG_FILE" ]]; then
         grep "^CLAUDE_DEFAULT_MODEL=" "$CONFIG_FILE" >> "$temp_file" 2>/dev/null || true
+        grep "^CLAUDE_CONTEXT_ENABLED=" "$CONFIG_FILE" >> "$temp_file" 2>/dev/null || true
     fi
     
     echo "CLAUDE_API_KEY=$1" >> "$temp_file"
@@ -60,15 +68,38 @@ save_api_key() {
 save_default_model() {
     local temp_file=$(mktemp)
     
-    # Preserve existing API key if it exists
+    # Preserve existing API key and context setting if they exist
     if [[ -f "$CONFIG_FILE" ]]; then
         grep "^CLAUDE_API_KEY=" "$CONFIG_FILE" >> "$temp_file" 2>/dev/null || true
+        grep "^CLAUDE_CONTEXT_ENABLED=" "$CONFIG_FILE" >> "$temp_file" 2>/dev/null || true
     fi
     
     echo "CLAUDE_DEFAULT_MODEL=$1" >> "$temp_file"
     mv "$temp_file" "$CONFIG_FILE"
     chmod 600 "$CONFIG_FILE"
     echo "Default model set to $1 and saved to $CONFIG_FILE"
+    exit 0
+}
+
+save_context_setting() {
+    local enabled="$1"
+    local temp_file=$(mktemp)
+    
+    # Preserve existing API key and default model if they exist
+    if [[ -f "$CONFIG_FILE" ]]; then
+        grep "^CLAUDE_API_KEY=" "$CONFIG_FILE" >> "$temp_file" 2>/dev/null || true
+        grep "^CLAUDE_DEFAULT_MODEL=" "$CONFIG_FILE" >> "$temp_file" 2>/dev/null || true
+    fi
+    
+    echo "CLAUDE_CONTEXT_ENABLED=$enabled" >> "$temp_file"
+    mv "$temp_file" "$CONFIG_FILE"
+    chmod 600 "$CONFIG_FILE"
+    
+    if [[ "$enabled" == "true" ]]; then
+        echo "Context window ENABLED and saved to config"
+    else
+        echo "Context window DISABLED and saved to config"
+    fi
     exit 0
 }
 
@@ -121,6 +152,80 @@ list_available_models() {
     fi
     
     exit 0
+}
+
+toggle_context() {
+    load_config
+    
+    # Check current state and toggle it
+    if [[ "$CLAUDE_CONTEXT_ENABLED" == "true" ]]; then
+        save_context_setting "false"
+    else
+        save_context_setting "true"
+    fi
+}
+
+clear_history() {
+    if [[ -f "$HISTORY_FILE" ]]; then
+        rm "$HISTORY_FILE"
+        echo "Conversation history cleared"
+    else
+        echo "No conversation history found"
+    fi
+    exit 0
+}
+
+save_to_history() {
+    local role="$1"
+    local content="$2"
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    # Create history file if it doesn't exist
+    touch "$HISTORY_FILE"
+    chmod 600 "$HISTORY_FILE"
+    
+    # Append the message to history in compact JSON format (one line per object)
+    local entry=$(jq -c -n \
+        --arg role "$role" \
+        --arg content "$content" \
+        --arg timestamp "$timestamp" \
+        '{
+            "role": $role,
+            "content": $content,
+            "timestamp": $timestamp
+        }')
+    
+    echo "$entry" >> "$HISTORY_FILE"
+}
+
+load_history() {
+    if [[ ! -f "$HISTORY_FILE" ]]; then
+        echo "[]"
+        return
+    fi
+    
+    # Read history and convert to Claude API format
+    # Keep only the last 20 messages to manage token usage efficiently
+    local messages="[]"
+    
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        # Skip empty lines and process single-line JSON objects
+        if [[ -n "$line" && "$line" =~ ^\{.*\}$ ]]; then
+            # Validate JSON line first
+            if echo "$line" | jq empty 2>/dev/null; then
+                local role=$(echo "$line" | jq -r '.role' 2>/dev/null)
+                local content=$(echo "$line" | jq -r '.content' 2>/dev/null)
+                
+                if [[ "$role" != "null" && "$content" != "null" && -n "$role" && -n "$content" ]]; then
+                    # Use jq to properly escape the content
+                    messages=$(echo "$messages" | jq --arg role "$role" --arg content "$content" '. += [{"role": $role, "content": $content}]')
+                fi
+            fi
+        fi
+    done < "$HISTORY_FILE"
+    
+    # Keep only the last 20 messages for token efficiency
+    echo "$messages" | jq '.[-20:]'
 }
 
 format_markdown() {
@@ -250,24 +355,33 @@ send_request() {
     local query="$1"
     local model="${2:-$DEFAULT_MODEL}"
     local no_format="$3"
+    local use_context="${4:-false}"
     
     if [[ -z "$CLAUDE_API_KEY" ]]; then
         echo "Error: API key not found. Set it with: claude-cli -k YOUR_API_KEY" >&2
         exit 1
     fi
     
+    local messages
+    if [[ "$use_context" == "true" ]]; then
+        # Load existing history and add new user message
+        messages=$(load_history)
+        messages=$(echo "$messages" | jq ". += [{\"role\": \"user\", \"content\": \"$query\"}]")
+        
+        # Save user message to history
+        save_to_history "user" "$query"
+    else
+        # Single message without context
+        messages='[{"role": "user", "content": "'"$query"'"}]'
+    fi
+    
     local json_payload=$(jq -n \
         --arg model "$model" \
-        --arg query "$query" \
+        --argjson messages "$messages" \
         '{
             "model": $model,
             "max_tokens": 1024,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": $query
-                }
-            ]
+            "messages": $messages
         }')
     
     local response=$(curl -s -X POST "$CLAUDE_API_URL" \
@@ -282,6 +396,12 @@ send_request() {
     fi
     
     local content=$(echo "$response" | jq -r '.content[0].text')
+    
+    # Save assistant response to history if using context
+    if [[ "$use_context" == "true" ]]; then
+        save_to_history "assistant" "$content"
+    fi
+    
     format_markdown "$content" "$no_format"
 }
 
@@ -292,6 +412,8 @@ main() {
     local model="$DEFAULT_MODEL"
     local query=""
     local no_format="false"
+    local use_context="${CLAUDE_CONTEXT_ENABLED:-false}"
+    local context_override="false"
     
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -331,6 +453,17 @@ main() {
                 no_format="true"
                 shift
                 ;;
+            --context-window)
+                use_context="true"
+                context_override="true"
+                shift
+                ;;
+            --toggle-context)
+                toggle_context
+                ;;
+            --restart-chat)
+                clear_history
+                ;;
             -*)
                 echo "Error: Unknown option $1" >&2
                 show_help >&2
@@ -349,7 +482,7 @@ main() {
         exit 1
     fi
     
-    send_request "$query" "$model" "$no_format"
+    send_request "$query" "$model" "$no_format" "$use_context"
 }
 
 main "$@"

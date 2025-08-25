@@ -26,14 +26,20 @@ claude-cli "Jaká je vzdálenost mezi Zemí a Měsícem přepočtena na počet �
 # Použití konkrétního modelu pro jeden dotaz
 claude-cli -m claude-3-haiku-20240307 "Rychlá otázka"
 
-# Nastavení výchozího modelu
-claude-cli -d claude-sonnet-4-0
-
 # Zobrazit aktuální výchozí model
 claude-cli --show-model
 
 # Zobrazit dostupné modely z API
 claude-cli --list-models
+
+# Nastavení výchozího modelu (uloží se do konfigurace)
+claude-cli -d claude-sonnet-4-0
+
+# Zapnutí kontextového okna permanentně
+claude-cli --toggle-context
+
+# Restart chatu - vymazání historie
+claude-cli --restart-chat
 
 # Zobrazit nápovědu
 claude-cli -h
@@ -70,6 +76,10 @@ sudo apt-get install jq curl glow
 - ✅ Zobrazení aktuálního výchozího modelu
 - ✅ Zobrazení dostupných modelů z API
 - ✅ Markdown formátování odpovědí
+- ✅ Kontextové okno pro pokračování konverzace
+- ✅ Permanentní zapnutí/vypnutí kontextového okna (toggle)
+- ✅ Historie konverzace ukládaná v ~/.claude-cli-history
+- ✅ Restart chatu s vymazáním historie
 - ✅ Nápověda
 
 ## Příklady
@@ -77,15 +87,6 @@ sudo apt-get install jq curl glow
 ```bash
 # Nastavení API klíče
 claude-cli -k sk-ant-api03-...
-
-# Nastavení výchozího modelu (uloží se do konfigurace)
-claude-cli -d claude-sonnet-4-0
-
-# Zobrazení aktuálního výchozího modelu
-claude-cli --show-model
-
-# Zobrazení dostupných modelů z API
-claude-cli --list-models
 
 # Jednoduché dotazy (použije výchozí model)
 claude-cli "Co je to umělá inteligence?"
@@ -97,6 +98,57 @@ claude-cli -m claude-3-haiku-20240307 "Rychlá otázka"
 # Bez formátování (raw markdown)
 claude-cli --no-format "Zobraz mi markdown syntax"
 ```
+
+## Kontextové okno (Context Window)
+
+Claude CLI podporuje pokračování konverzace pomocí kontextového okna:
+
+### Jak funguje
+- **Defaultně vypnuto**: Bez aktivace každý dotaz je nezávislý
+- **Historie se ukládá**: Při zapnutí se konverzace ukládá do `~/.claude-cli-history`
+- **Persistentní nastavení**: Jednou zapnuto, zůstává aktivní pro všechny příkazy
+- **Efektivní správa tokenů**: Uchovává pouze posledních 20 zpráv pro optimalizaci
+- **Bezpečnost**: Historie je uložena s právy 600 (pouze vlastník může číst)
+
+### Zapnutí/vypnutí kontextového okna
+
+#### Permanentní aktivace (doporučený způsob)
+
+```bash
+# Zapnutí kontextového okna permanentně
+claude-cli --toggle-context
+
+# Po zapnutí fungují všechny dotazy s kontextem automaticky
+claude-cli "Ahoj Claude!"
+claude-cli "Co jsi říkal v předchozí zprávě?"
+
+# Vypnout kontextové okno
+claude-cli --toggle-context
+```
+
+#### Dočasné použití
+```bash
+# Vynutit kontext jen pro tento jeden dotaz
+claude-cli --context-window "Tvůj dotaz s kontextem"
+claude-cli --context-window "Na co jsem se ptal?"
+
+# Další dotaz už bude bez kontextu (pokud není zapnut toggle)
+claude-cli "Normální dotaz"
+```
+
+### Správa historie
+```bash
+# Vymazání historie konverzace
+claude-cli --restart-chat
+
+# Zobrazení stavu kontextového okna
+cat ~/.claude-cli-history
+```
+
+### Tip
+- Pro pohodlné používání: `claude-cli --toggle-context` jednou zapne, pak už nemusíš zadávat žádné parametry
+- Pro dlouhodobé konverzace doporučujeme občasný restart pomocí `--restart-chat` pro udržení relevantnosti kontextu
+- **Pozor, s každým dotazem se posílá i historie a zvyšuje se tím spotřeba input tokenů!**
 
 ## Markdown formátování
 
