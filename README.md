@@ -2,7 +2,7 @@
 
 # Claude-CLI
 
-**Language:** [🇺🇸 English](README.md) | [🇨🇿 Čeština](README.cs.md)
+[🇺🇸 English](README.md) | [🇨🇿 Čeština](README.cs.md)
 
 A simple CLI application for communicating with the Anthropic Claude API.
 
