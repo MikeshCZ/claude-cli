@@ -9,7 +9,7 @@ Jednoduchá CLI aplikace pro komunikaci s Anthropic Claude API.
 
 1. Stáhněte soubor `claude-cli`
 2. Učiňte jej spustitelný: `chmod +x claude-cli`
-3. (Volitelně) Přesuňte do PATH: `sudo mv claude-cli /usr/local/bin/`
+3. (Volitelně) Zkopírujte do PATH: `sudo cp claude-cli /usr/local/bin/`
 
 ## Nastavení
 
@@ -27,7 +27,7 @@ claude-cli "Jaká je vzdálenost mezi Zemí a Měsícem přepočtena na počet �
 claude-cli -m claude-3-haiku-20240307 "Rychlá otázka"
 
 # Nastavení výchozího modelu
-claude-cli -d claude-sonnet-4-20250514
+claude-cli -d claude-sonnet-4-0
 
 # Zobrazit aktuální výchozí model
 claude-cli --show-model
@@ -75,7 +75,7 @@ sudo apt-get install jq curl glow
 claude-cli -k sk-ant-api03-...
 
 # Nastavení výchozího modelu (uloží se do konfigurace)
-claude-cli -d claude-sonnet-4-20250514
+claude-cli -d claude-sonnet-4-0
 
 # Zobrazení aktuálního výchozího modelu
 claude-cli --show-model
