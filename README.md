@@ -32,6 +32,9 @@ claude-cli -d claude-sonnet-4-0
 # Zobrazit aktuální výchozí model
 claude-cli --show-model
 
+# Zobrazit dostupné modely z API
+claude-cli --list-models
+
 # Zobrazit nápovědu
 claude-cli -h
 ```
@@ -65,6 +68,7 @@ sudo apt-get install jq curl glow
 - ✅ Výběr modelu pro jednotlivé dotazy
 - ✅ Nastavení výchozího modelu
 - ✅ Zobrazení aktuálního výchozího modelu
+- ✅ Zobrazení dostupných modelů z API
 - ✅ Markdown formátování odpovědí
 - ✅ Nápověda
 
@@ -79,6 +83,9 @@ claude-cli -d claude-sonnet-4-0
 
 # Zobrazení aktuálního výchozího modelu
 claude-cli --show-model
+
+# Zobrazení dostupných modelů z API
+claude-cli --list-models
 
 # Jednoduché dotazy (použije výchozí model)
 claude-cli "Co je to umělá inteligence?"
