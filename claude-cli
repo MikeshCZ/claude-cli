@@ -6,7 +6,7 @@ CLAUDE_API_URL="https://api.anthropic.com/v1/messages"
 CONFIG_FILE="$HOME/.claude-cli-config"
 HISTORY_FILE="$HOME/.claude-cli-history"
 DEFAULT_MODEL="claude-3-5-haiku-latest"
-VERSION="v1.1.2"
+VERSION="v1.1.3"
 
 show_help() {
     cat << EOF
@@ -50,8 +50,10 @@ SETUP:
     3. Optionally set default model: claude-cli -d MODEL_NAME
     4. Ask questions: claude-cli "Your question here"
 
+GitHub: https://github.com/MikeshCZ/claude-cli
 Created by Michal Šára (https://michalsara.cz)
 Version: $VERSION
+
 EOF
 }
 
@@ -68,6 +70,7 @@ show_version() {
 Claude-CLI $VERSION
 
 A simple CLI tool for interacting with Anthropic Claude API.
+GitHub: https://github.com/MikeshCZ/claude-cli
 Created by Michal Šára (https://michalsara.cz)
 
 EOF
