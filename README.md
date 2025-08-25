@@ -191,6 +191,8 @@ cat ~/.claude-cli-history
 
 ## Markdown formátování
 
+- **Glow**: Pokud je nainstalován, tak se použije se automaticky (má přednost před ručním formátováním níže).
+
 Aplikace automaticky obarvuje a formátuje odpovědi s následujícími prvky:
 
 ### Nadpisy
@@ -220,7 +222,6 @@ Aplikace automaticky obarvuje a formátuje odpovědi s následujícími prvky:
 
 - **Výchozí**: Barevné formátování zapnuto
 - `--no-format`: Raw markdown bez formátování
-- **Glow**: Pokud je nainstalován, použije se automaticky
 
 ## 🧑‍💻 Autor
 
