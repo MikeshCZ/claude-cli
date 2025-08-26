@@ -16,6 +16,8 @@ A simple CLI application for communicating with the Anthropic Claude API.
 2. Make it executable: `chmod +x claude-cli`
 3. (Optional) Move to PATH: `sudo mv claude-cli /usr/local/bin/`
 
+> Alternative: On macOS you can use [Homebrew](https://brew.sh/) and [my 3rd party tap](https://github.com/MikeshCZ/homebrew-tap).
+
 ## Setup
 
 1. Get an API key from https://console.anthropic.com/
